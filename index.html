@@ -26,7 +26,7 @@
             console.log(products);
 
             const container = document.getElementById("products");
-            container.innerHTML ="";
+            container.innerHTML = "";
             products.forEach((pd) => {
               const h4 = document.createElement("h4");
               h4.innerHTML = `<strong>Name:${pd.name}</strong>--Price:${pd.price}--quantity:${pd.quantity}
@@ -41,49 +41,45 @@
 
       // Load product
       function loadProduct(id) {
-          fetch(`/product/${id}`)
-          .then(res=>res.json())
-          .then(data=>{
+        fetch(`/product/${id}`)
+          .then((res) => res.json())
+          .then((data) => {
             //   console.log(data);
             // const update=document.getElementById('update')
-            update.innerHTML=`
+            update.innerHTML = `
             <p><strong>Update:${data._id}</strong></p></br>
             Price:<input type="number" value="${data.price}" id="price"></br>
             Quantity:<input type="number" value="${data.quantity}" id="quantity"></br>
             <button onclick=updateProduct("${data._id}")>Submit</button>
     
             `;
-          })
-
-
+          });
       }
-    //   updating products
-      function updateProduct(id){
+      //   updating products
+      function updateProduct(id) {
         //    console.log('updating product')
-        const price=document.getElementById('price').value;
-        const quantity=document.getElementById('quantity').value;
-        const product={id,price,quantity};
+        const price = document.getElementById("price").value;
+        const quantity = document.getElementById("quantity").value;
+        const product = { id, price, quantity };
         // console.log(product);
-        fetch(`/update/${id}`,{
-            method:"PATCH",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(product)
+        fetch(`/update/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(product),
         })
-        .then(res=>res.json())
-            .then(result=>{
+          .then((res) => res.json())
+          .then((result) => {
             // console.log(result)
-            if(result){
-                loadAllProduct();
-                document.getElementById('update').innerHTML="";
-
+            if (result) {
+              loadAllProduct();
+              document.getElementById("update").innerHTML = "";
             }
-        })
-        
+          });
       }
 
       // DeleteProduct
 
-      function deleteProduct(event,id) {
+      function deleteProduct(event, id) {
         //   console.log(event.target.parentNode)
         // console.log(id)
         fetch(`/delete/${id}`, {
@@ -92,9 +88,9 @@
           .then((res) => res.json())
           .then((result) => {
             // console.log("deleted Successfully");
-            if(result){
-                event.target.parentNode.style.display="none";
-      }
+            if (result) {
+              event.target.parentNode.style.display = "none";
+            }
           });
       }
     </script>

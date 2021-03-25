@@ -20,8 +20,7 @@ client.connect((err) => {
   const productCollection = client.db("OrganicDB").collection("products");
   //   read product
   app.get("/products", (req, res) => {
-    productCollection.find({})
-    .toArray((error, documents) => {
+    productCollection.find({}).toArray((error, documents) => {
       res.send(documents);
     });
   });
@@ -29,8 +28,7 @@ client.connect((err) => {
   //   create product
   app.post("/addProduct", (req, res) => {
     const product = req.body;
-    productCollection.insertOne(product)
-    .then((result) => {
+    productCollection.insertOne(product).then((result) => {
       console.log("Product Data added Successfully");
       // res.send("success punched");
       res.redirect("/");
@@ -39,31 +37,29 @@ client.connect((err) => {
 
   console.log("database ready now");
 
-
   // load product
-  app.get('/product/:id',(req,res)=>{
-    productCollection.find({_id: ObjectId(req.params.id)})
-    .toArray((error,documents)=>{
-      res.send(documents[0]);
-    })
-  })
+  app.get("/product/:id", (req, res) => {
+    productCollection
+      .find({ _id: ObjectId(req.params.id) })
+      .toArray((error, documents) => {
+        res.send(documents[0]);
+      });
+  });
 
   // update products
-  app.patch('/update/:id',(req,res)=>{
-    productCollection.updateOne({ _id: ObjectId(req.params.id) },
-    
-    {
-      $set:{price: req.body.price, quantity: req.body.quantity}
+  app.patch("/update/:id", (req, res) => {
+    productCollection
+      .updateOne(
+        { _id: ObjectId(req.params.id) },
 
-    } )
-    .then(result=>{
-      res.send(result.modifiedCount>0);
-    })
-    
-    
-   
-    
-  })
+        {
+          $set: { price: req.body.price, quantity: req.body.quantity },
+        }
+      )
+      .then((result) => {
+        res.send(result.modifiedCount > 0);
+      });
+  });
 
   // delete products
   app.delete("/delete/:id", (req, res) => {
@@ -72,8 +68,7 @@ client.connect((err) => {
       .deleteOne({ _id: ObjectId(req.params.id) })
 
       .then((result) => {
-       res.send(result.deletedCount>0);
-       
+        res.send(result.deletedCount > 0);
       });
   });
 });
