@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MangoDB</title>
+  </head>
+  <body>
+    <h2>Look Man,I am MongoDB database user</h2>
+    <form action="/addProduct" method="post">
+      <input type="text" name="name" placeholder="name" id="" /><br />
+      <input type="number" name="price" placeholder="price" id="" /><br />
+      <input type="number" name="quantity" placeholder="quantity" id="" /><br />
+      <button>Add Product</button>
+    </form>
+
+    <div id="products"></div>
+    <div id="update"></div>
+
+    <script>
+      function loadAllProduct() {
+        fetch("/products")
+          .then((res) => res.json())
+          .then((products) => {
+            console.log(products);
+
+            const container = document.getElementById("products");
+            container.innerHTML ="";
+            products.forEach((pd) => {
+              const h4 = document.createElement("h4");
+              h4.innerHTML = `<strong>Name:${pd.name}</strong>--Price:${pd.price}--quantity:${pd.quantity}
+                <button onclick="loadProduct('${pd._id}')">Update</button>
+                <button onclick="deleteProduct(event,'${pd._id}')">Delete</button>
+                `;
+              container.appendChild(h4);
+            });
+          });
+      }
+      loadAllProduct();
+
+      // Load product
+      function loadProduct(id) {
+          fetch(`/product/${id}`)
+          .then(res=>res.json())
+          .then(data=>{
+            //   console.log(data);
+            // const update=document.getElementById('update')
+            update.innerHTML=`
+            <p><strong>Update:${data._id}</strong></p></br>
+            Price:<input type="number" value="${data.price}" id="price"></br>
+            Quantity:<input type="number" value="${data.quantity}" id="quantity"></br>
+            <button onclick=updateProduct("${data._id}")>Submit</button>
+    
+            `;
+          })
+
+
+      }
+    //   updating products
+      function updateProduct(id){
+        //    console.log('updating product')
+        const price=document.getElementById('price').value;
+        const quantity=document.getElementById('quantity').value;
+        const product={id,price,quantity};
+        // console.log(product);
+        fetch(`/update/${id}`,{
+            method:"PATCH",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(product)
+        })
+        .then(res=>res.json())
+            .then(result=>{
+            // console.log(result)
+            if(result){
+                loadAllProduct();
+                document.getElementById('update').innerHTML="";
+
+            }
+        })
+        
+      }
+
+      // DeleteProduct
+
+      function deleteProduct(event,id) {
+        //   console.log(event.target.parentNode)
+        // console.log(id)
+        fetch(`/delete/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            // console.log("deleted Successfully");
+            if(result){
+                event.target.parentNode.style.display="none";
+      }
+          });
+      }
+    </script>
+  </body>
+</html>
